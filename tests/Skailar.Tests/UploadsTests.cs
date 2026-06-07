@@ -46,7 +46,7 @@ public sealed class UploadsTests(MockServerFixture fixture) : IClassFixture<Mock
             ContentType = ImageContentType.Webp,
         });
 
-        using JsonDocument body = JsonDocument.Parse(_fixture.Server.LogEntries.Single().RequestMessage.Body!);
+        using JsonDocument body = JsonDocument.Parse(_fixture.SingleRequestBody());
         Assert.Equal("image/webp", body.RootElement.GetProperty("content_type").GetString());
         Assert.Equal("aGVsbG8=", body.RootElement.GetProperty("base64").GetString());
     }
@@ -86,7 +86,7 @@ public sealed class UploadsTests(MockServerFixture fixture) : IClassFixture<Mock
             ContentType = FileContentType.Text,
         });
 
-        using JsonDocument body = JsonDocument.Parse(_fixture.Server.LogEntries.Single().RequestMessage.Body!);
+        using JsonDocument body = JsonDocument.Parse(_fixture.SingleRequestBody());
         Assert.Equal("text/plain", body.RootElement.GetProperty("content_type").GetString());
     }
 }

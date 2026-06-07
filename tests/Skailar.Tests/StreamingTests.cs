@@ -127,7 +127,7 @@ public sealed class StreamingTests(MockServerFixture fixture) : IClassFixture<Mo
         {
         }
 
-        using var body = System.Text.Json.JsonDocument.Parse(_fixture.Server.LogEntries.Single().RequestMessage.Body!);
+        using var body = System.Text.Json.JsonDocument.Parse(_fixture.SingleRequestBody());
         Assert.True(body.RootElement.GetProperty("stream").GetBoolean());
     }
 }

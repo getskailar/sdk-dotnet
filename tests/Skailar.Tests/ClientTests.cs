@@ -67,7 +67,7 @@ public sealed class ClientTests(MockServerFixture fixture) : IClassFixture<MockS
         });
         await client.PingAsync();
 
-        string trace = _fixture.Server.LogEntries.Single().RequestMessage.Headers!["X-Trace-Id"].Single();
+        string trace = _fixture.SingleRequestHeader("X-Trace-Id");
         Assert.Equal("trace-42", trace);
     }
 
@@ -87,7 +87,7 @@ public sealed class ClientTests(MockServerFixture fixture) : IClassFixture<MockS
         });
         await client.PingAsync();
 
-        string auth = _fixture.Server.LogEntries.Single().RequestMessage.Headers!["Authorization"].Single();
+        string auth = _fixture.SingleRequestHeader("Authorization");
         Assert.Equal($"Bearer {MockServerFixture.TestApiKey}", auth);
     }
 

@@ -45,8 +45,7 @@ public sealed class ChatTests(MockServerFixture fixture) : IClassFixture<MockSer
             Messages = [ChatMessage.User("hi")],
         });
 
-        var log = _fixture.Server.LogEntries.Single();
-        string auth = log.RequestMessage.Headers!["Authorization"].Single();
+        string auth = _fixture.SingleRequestHeader("Authorization");
         Assert.Equal($"Bearer {MockServerFixture.TestApiKey}", auth);
     }
 
@@ -67,7 +66,7 @@ public sealed class ChatTests(MockServerFixture fixture) : IClassFixture<MockSer
             ReasoningEffort = ReasoningEffort.High,
         });
 
-        using JsonDocument body = JsonDocument.Parse(_fixture.Server.LogEntries.Single().RequestMessage.Body!);
+        using JsonDocument body = JsonDocument.Parse(_fixture.SingleRequestBody());
         JsonElement root = body.RootElement;
         Assert.Equal(64, root.GetProperty("max_tokens").GetInt32());
         Assert.Equal("high", root.GetProperty("reasoning_effort").GetString());
@@ -89,7 +88,7 @@ public sealed class ChatTests(MockServerFixture fixture) : IClassFixture<MockSer
             Messages = [ChatMessage.User("hi")],
         });
 
-        using JsonDocument body = JsonDocument.Parse(_fixture.Server.LogEntries.Single().RequestMessage.Body!);
+        using JsonDocument body = JsonDocument.Parse(_fixture.SingleRequestBody());
         Assert.False(body.RootElement.TryGetProperty("temperature", out _));
         Assert.False(body.RootElement.TryGetProperty("tools", out _));
     }
@@ -110,7 +109,7 @@ public sealed class ChatTests(MockServerFixture fixture) : IClassFixture<MockSer
             Stream = true,
         });
 
-        using JsonDocument body = JsonDocument.Parse(_fixture.Server.LogEntries.Single().RequestMessage.Body!);
+        using JsonDocument body = JsonDocument.Parse(_fixture.SingleRequestBody());
         Assert.False(body.RootElement.GetProperty("stream").GetBoolean());
     }
 
@@ -132,7 +131,7 @@ public sealed class ChatTests(MockServerFixture fixture) : IClassFixture<MockSer
             ],
         });
 
-        using JsonDocument body = JsonDocument.Parse(_fixture.Server.LogEntries.Single().RequestMessage.Body!);
+        using JsonDocument body = JsonDocument.Parse(_fixture.SingleRequestBody());
         JsonElement content = body.RootElement.GetProperty("messages")[0].GetProperty("content");
         Assert.Equal(JsonValueKind.Array, content.ValueKind);
         Assert.Equal("text", content[0].GetProperty("type").GetString());
@@ -156,7 +155,7 @@ public sealed class ChatTests(MockServerFixture fixture) : IClassFixture<MockSer
             ToolChoice = ToolChoice.Function("get_weather"),
         });
 
-        using JsonDocument body = JsonDocument.Parse(_fixture.Server.LogEntries.Single().RequestMessage.Body!);
+        using JsonDocument body = JsonDocument.Parse(_fixture.SingleRequestBody());
         JsonElement choice = body.RootElement.GetProperty("tool_choice");
         Assert.Equal("function", choice.GetProperty("type").GetString());
         Assert.Equal("get_weather", choice.GetProperty("function").GetProperty("name").GetString());
@@ -178,7 +177,7 @@ public sealed class ChatTests(MockServerFixture fixture) : IClassFixture<MockSer
             ToolChoice = ToolChoice.Required,
         });
 
-        using JsonDocument body = JsonDocument.Parse(_fixture.Server.LogEntries.Single().RequestMessage.Body!);
+        using JsonDocument body = JsonDocument.Parse(_fixture.SingleRequestBody());
         Assert.Equal("required", body.RootElement.GetProperty("tool_choice").GetString());
     }
 }

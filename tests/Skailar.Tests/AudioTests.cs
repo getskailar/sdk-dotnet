@@ -43,7 +43,7 @@ public sealed class AudioTests(MockServerFixture fixture) : IClassFixture<MockSe
             Mime = SkailarMime.Webm,
         });
 
-        using JsonDocument body = JsonDocument.Parse(_fixture.Server.LogEntries.Single().RequestMessage.Body!);
+        using JsonDocument body = JsonDocument.Parse(_fixture.SingleRequestBody());
         Assert.Equal("audio/webm", body.RootElement.GetProperty("mime").GetString());
     }
 
@@ -83,7 +83,7 @@ public sealed class AudioTests(MockServerFixture fixture) : IClassFixture<MockSe
             Voice = SkailarVoice.Shimmer,
         });
 
-        using JsonDocument body = JsonDocument.Parse(_fixture.Server.LogEntries.Single().RequestMessage.Body!);
+        using JsonDocument body = JsonDocument.Parse(_fixture.SingleRequestBody());
         Assert.Equal("shimmer", body.RootElement.GetProperty("voice").GetString());
     }
 

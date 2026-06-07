@@ -26,5 +26,29 @@ public sealed class MockServerFixture : IDisposable
 
     public void Reset() => Server.Reset();
 
+    /// <summary>The JSON body of the single recorded request.</summary>
+    public string SingleRequestBody()
+    {
+        if (Server.LogEntries.Single().RequestMessage is not { } request)
+        {
+            throw new InvalidOperationException("No request was recorded.");
+        }
+
+        return request.Body ?? throw new InvalidOperationException("The recorded request had no body.");
+    }
+
+    /// <summary>The first value of a header on the single recorded request.</summary>
+    public string SingleRequestHeader(string name)
+    {
+        if (Server.LogEntries.Single().RequestMessage is not { } request)
+        {
+            throw new InvalidOperationException("No request was recorded.");
+        }
+
+        var headers = request.Headers
+            ?? throw new InvalidOperationException("The recorded request had no headers.");
+        return headers[name].Single();
+    }
+
     public void Dispose() => Server.Stop();
 }

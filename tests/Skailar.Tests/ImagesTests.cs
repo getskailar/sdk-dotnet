@@ -52,7 +52,7 @@ public sealed class ImagesTests(MockServerFixture fixture) : IClassFixture<MockS
             Quality = "hd",
         });
 
-        using JsonDocument body = JsonDocument.Parse(_fixture.Server.LogEntries.Single().RequestMessage.Body!);
+        using JsonDocument body = JsonDocument.Parse(_fixture.SingleRequestBody());
         Assert.Equal("sunset", body.RootElement.GetProperty("prompt").GetString());
         Assert.Equal("1792x1024", body.RootElement.GetProperty("size").GetString());
         Assert.Equal("hd", body.RootElement.GetProperty("quality").GetString());
